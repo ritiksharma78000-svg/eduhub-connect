@@ -19,8 +19,10 @@ export const Route = createFileRoute("/")({
       { property: "og:title", content: "[School Name] — Excellence in Education" },
       { property: "og:description", content: "Discover our campus: admissions, notices, facilities and more." },
       { property: "og:type", content: "website" },
+      { property: "og:url", content: "/" },
       { name: "twitter:card", content: "summary_large_image" },
     ],
+    links: [{ rel: "canonical", href: "/" }],
   }),
   component: Home,
 });

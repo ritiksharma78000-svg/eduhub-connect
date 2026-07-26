@@ -16,8 +16,10 @@ export const Route = createFileRoute("/contact")({
       { property: "og:title", content: "Contact — [School Name]" },
       { property: "og:description", content: "Reach out to our admissions team." },
       { property: "og:type", content: "website" },
+      { property: "og:url", content: "/contact" },
       { name: "twitter:card", content: "summary_large_image" },
     ],
+    links: [{ rel: "canonical", href: "/contact" }],
   }),
   component: ContactPage,
 });
