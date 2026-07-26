@@ -67,7 +67,7 @@ function NoticeDetailPage() {
         <p className="mt-3 text-lg text-muted-foreground">{notice.body}</p>
 
         <div className="mt-8 space-y-5 text-base leading-relaxed text-foreground">
-          {notice.content.map((paragraph, i) => (
+          {notice.content.map((paragraph: string, i: number) => (
             <p key={i}>{paragraph}</p>
           ))}
         </div>
