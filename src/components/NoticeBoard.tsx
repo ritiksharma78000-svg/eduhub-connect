@@ -1,19 +1,10 @@
 import { useState } from "react";
-import { Calendar, Trophy, BookOpen, Megaphone } from "lucide-react";
+import { Link } from "@tanstack/react-router";
+import { Calendar, Trophy, BookOpen, Megaphone, ArrowRight } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { notices, type NoticeCategory } from "@/lib/notices";
 
-type Category = "General" | "Exams" | "Sports";
-
-const notices: { category: Category; date: string; title: string; body: string; tag?: string }[] = [
-  { category: "General", date: "Aug 12, 2026", title: "Annual Day Celebration", body: "Join us on August 30 for our annual cultural showcase featuring performances from every grade.", tag: "New" },
-  { category: "General", date: "Aug 05, 2026", title: "Parent-Teacher Meeting", body: "Term 1 PTMs are scheduled for the last week of August. Booking opens Monday." },
-  { category: "Exams", date: "Aug 10, 2026", title: "Mid-Term Schedule Released", body: "Grade 6-12 mid-term timetables are now available on the parent portal." },
-  { category: "Exams", date: "Aug 03, 2026", title: "Practical Exam Guidelines", body: "Revised guidelines for science practical assessments will be shared this week." },
-  { category: "Sports", date: "Aug 15, 2026", title: "Inter-House Basketball Finals", body: "Come cheer for the finals on Saturday at 4 PM in the Sports Complex.", tag: "Live" },
-  { category: "Sports", date: "Aug 07, 2026", title: "Swim Team Trials", body: "Trials for the school swim team are open to grades 7-12 through August 20." },
-];
-
-const tabs: { key: Category | "All"; icon: typeof Megaphone }[] = [
+const tabs: { key: NoticeCategory | "All"; icon: typeof Megaphone }[] = [
   { key: "All", icon: Megaphone },
   { key: "General", icon: Megaphone },
   { key: "Exams", icon: BookOpen },
@@ -21,7 +12,7 @@ const tabs: { key: Category | "All"; icon: typeof Megaphone }[] = [
 ];
 
 export function NoticeBoard() {
-  const [active, setActive] = useState<Category | "All">("All");
+  const [active, setActive] = useState<NoticeCategory | "All">("All");
   const filtered = active === "All" ? notices : notices.filter((n) => n.category === active);
 
   return (
@@ -55,25 +46,34 @@ export function NoticeBoard() {
       </div>
 
       <ul className="mt-6 divide-y divide-border">
-        {filtered.map((n, i) => (
-          <li key={i} className="grid grid-cols-[minmax(0,1fr)_auto] items-start gap-4 py-5 sm:flex sm:items-center">
-            <div className="min-w-0">
-              <div className="flex flex-wrap items-center gap-2">
-                <span className="inline-flex items-center gap-1 rounded-full bg-primary/5 px-2.5 py-0.5 text-xs font-semibold text-primary">
-                  <Calendar className="h-3 w-3" /> {n.date}
-                </span>
-                <span className="rounded-full bg-accent px-2.5 py-0.5 text-xs font-semibold text-accent-foreground">
-                  {n.category}
-                </span>
-                {n.tag && (
-                  <span className="rounded-full bg-gold px-2.5 py-0.5 text-xs font-semibold text-gold-foreground">
-                    {n.tag}
+        {filtered.map((n) => (
+          <li key={n.slug}>
+            <Link
+              to="/notices/$slug"
+              params={{ slug: n.slug }}
+              className="group grid grid-cols-[minmax(0,1fr)_auto] items-start gap-4 py-5 transition-colors hover:bg-muted/40 sm:flex sm:items-center"
+            >
+              <div className="min-w-0">
+                <div className="flex flex-wrap items-center gap-2">
+                  <span className="inline-flex items-center gap-1 rounded-full bg-primary/5 px-2.5 py-0.5 text-xs font-semibold text-primary">
+                    <Calendar className="h-3 w-3" /> {n.date}
                   </span>
-                )}
+                  <span className="rounded-full bg-accent px-2.5 py-0.5 text-xs font-semibold text-accent-foreground">
+                    {n.category}
+                  </span>
+                  {n.tag && (
+                    <span className="rounded-full bg-gold px-2.5 py-0.5 text-xs font-semibold text-gold-foreground">
+                      {n.tag}
+                    </span>
+                  )}
+                </div>
+                <h3 className="mt-2 font-display text-lg font-semibold text-foreground group-hover:text-primary">
+                  {n.title}
+                </h3>
+                <p className="mt-1 text-sm leading-relaxed text-muted-foreground">{n.body}</p>
               </div>
-              <h3 className="mt-2 font-display text-lg font-semibold text-foreground">{n.title}</h3>
-              <p className="mt-1 text-sm leading-relaxed text-muted-foreground">{n.body}</p>
-            </div>
+              <ArrowRight className="mt-2 h-5 w-5 shrink-0 text-primary/60 transition-transform group-hover:translate-x-1 group-hover:text-primary sm:mt-0" />
+            </Link>
           </li>
         ))}
         {filtered.length === 0 && (
