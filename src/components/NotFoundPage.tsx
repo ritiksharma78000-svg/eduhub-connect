@@ -1,7 +1,12 @@
 import { Link } from "@tanstack/react-router";
 import { Home, Mail, Search, BookOpen } from "lucide-react";
+import { useEffect } from "react";
 
 export function NotFoundPage() {
+  useEffect(() => {
+    document.title = "Page Not Found — [School Name]";
+  }, []);
+
   return (
     <section className="flex w-full flex-col items-center justify-center px-4 py-24 sm:py-32">
       <div className="relative w-full max-w-2xl rounded-3xl border border-border bg-card p-8 text-center shadow-sm sm:p-12">
