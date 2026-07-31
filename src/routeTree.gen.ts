@@ -11,8 +11,14 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as ContactRouteImport } from './routes/contact'
+import { Route as AuthRouteImport } from './routes/auth'
+import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as NoticesSlugRouteImport } from './routes/notices.$slug'
+import { Route as AuthenticatedTeacherRouteImport } from './routes/_authenticated/teacher'
+import { Route as AuthenticatedStudentRouteImport } from './routes/_authenticated/student'
+import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
+import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
 
 const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
   id: '/sitemap.xml',
@@ -22,6 +28,15 @@ const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
 const ContactRoute = ContactRouteImport.update({
   id: '/contact',
   path: '/contact',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthRoute = AuthRouteImport.update({
+  id: '/auth',
+  path: '/auth',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthenticatedRouteRoute = AuthenticatedRouteRouteImport.update({
+  id: '/_authenticated',
   getParentRoute: () => rootRouteImport,
 } as any)
 const IndexRoute = IndexRouteImport.update({
@@ -34,36 +49,103 @@ const NoticesSlugRoute = NoticesSlugRouteImport.update({
   path: '/notices/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthenticatedTeacherRoute = AuthenticatedTeacherRouteImport.update({
+  id: '/teacher',
+  path: '/teacher',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedStudentRoute = AuthenticatedStudentRouteImport.update({
+  id: '/student',
+  path: '/student',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
+  id: '/dashboard',
+  path: '/dashboard',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedAdminRoute = AuthenticatedAdminRouteImport.update({
+  id: '/admin',
+  path: '/admin',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/auth': typeof AuthRoute
   '/contact': typeof ContactRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/admin': typeof AuthenticatedAdminRoute
+  '/dashboard': typeof AuthenticatedDashboardRoute
+  '/student': typeof AuthenticatedStudentRoute
+  '/teacher': typeof AuthenticatedTeacherRoute
   '/notices/$slug': typeof NoticesSlugRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/auth': typeof AuthRoute
   '/contact': typeof ContactRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/admin': typeof AuthenticatedAdminRoute
+  '/dashboard': typeof AuthenticatedDashboardRoute
+  '/student': typeof AuthenticatedStudentRoute
+  '/teacher': typeof AuthenticatedTeacherRoute
   '/notices/$slug': typeof NoticesSlugRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
+  '/auth': typeof AuthRoute
   '/contact': typeof ContactRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/_authenticated/admin': typeof AuthenticatedAdminRoute
+  '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
+  '/_authenticated/student': typeof AuthenticatedStudentRoute
+  '/_authenticated/teacher': typeof AuthenticatedTeacherRoute
   '/notices/$slug': typeof NoticesSlugRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/contact' | '/sitemap.xml' | '/notices/$slug'
+  fullPaths:
+    | '/'
+    | '/auth'
+    | '/contact'
+    | '/sitemap.xml'
+    | '/admin'
+    | '/dashboard'
+    | '/student'
+    | '/teacher'
+    | '/notices/$slug'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/contact' | '/sitemap.xml' | '/notices/$slug'
-  id: '__root__' | '/' | '/contact' | '/sitemap.xml' | '/notices/$slug'
+  to:
+    | '/'
+    | '/auth'
+    | '/contact'
+    | '/sitemap.xml'
+    | '/admin'
+    | '/dashboard'
+    | '/student'
+    | '/teacher'
+    | '/notices/$slug'
+  id:
+    | '__root__'
+    | '/'
+    | '/_authenticated'
+    | '/auth'
+    | '/contact'
+    | '/sitemap.xml'
+    | '/_authenticated/admin'
+    | '/_authenticated/dashboard'
+    | '/_authenticated/student'
+    | '/_authenticated/teacher'
+    | '/notices/$slug'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
+  AuthRoute: typeof AuthRoute
   ContactRoute: typeof ContactRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   NoticesSlugRoute: typeof NoticesSlugRoute
@@ -85,6 +167,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ContactRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/auth': {
+      id: '/auth'
+      path: '/auth'
+      fullPath: '/auth'
+      preLoaderRoute: typeof AuthRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_authenticated': {
+      id: '/_authenticated'
+      path: ''
+      fullPath: '/'
+      preLoaderRoute: typeof AuthenticatedRouteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -99,11 +195,58 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof NoticesSlugRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_authenticated/teacher': {
+      id: '/_authenticated/teacher'
+      path: '/teacher'
+      fullPath: '/teacher'
+      preLoaderRoute: typeof AuthenticatedTeacherRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/student': {
+      id: '/_authenticated/student'
+      path: '/student'
+      fullPath: '/student'
+      preLoaderRoute: typeof AuthenticatedStudentRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/dashboard': {
+      id: '/_authenticated/dashboard'
+      path: '/dashboard'
+      fullPath: '/dashboard'
+      preLoaderRoute: typeof AuthenticatedDashboardRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/admin': {
+      id: '/_authenticated/admin'
+      path: '/admin'
+      fullPath: '/admin'
+      preLoaderRoute: typeof AuthenticatedAdminRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
   }
 }
 
+interface AuthenticatedRouteRouteChildren {
+  AuthenticatedAdminRoute: typeof AuthenticatedAdminRoute
+  AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
+  AuthenticatedStudentRoute: typeof AuthenticatedStudentRoute
+  AuthenticatedTeacherRoute: typeof AuthenticatedTeacherRoute
+}
+
+const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
+  AuthenticatedAdminRoute: AuthenticatedAdminRoute,
+  AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
+  AuthenticatedStudentRoute: AuthenticatedStudentRoute,
+  AuthenticatedTeacherRoute: AuthenticatedTeacherRoute,
+}
+
+const AuthenticatedRouteRouteWithChildren =
+  AuthenticatedRouteRoute._addFileChildren(AuthenticatedRouteRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
+  AuthRoute: AuthRoute,
   ContactRoute: ContactRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   NoticesSlugRoute: NoticesSlugRoute,
@@ -111,13 +254,3 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}

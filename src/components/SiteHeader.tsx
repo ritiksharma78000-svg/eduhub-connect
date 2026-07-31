@@ -1,7 +1,11 @@
-import { Link } from "@tanstack/react-router";
+import { Link, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
-import { GraduationCap, Menu, X } from "lucide-react";
+import { GraduationCap, LayoutDashboard, LogOut, Menu, X } from "lucide-react";
+import { useQueryClient } from "@tanstack/react-query";
+import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
+import { supabase } from "@/integrations/supabase/client";
+import { useSession } from "@/hooks/useAuth";
 
 const nav = [
   { to: "/", label: "Home" },
@@ -12,6 +16,18 @@ const nav = [
 
 export function SiteHeader() {
   const [open, setOpen] = useState(false);
+  const { user } = useSession();
+  const navigate = useNavigate();
+  const queryClient = useQueryClient();
+
+  async function signOut() {
+    await queryClient.cancelQueries();
+    queryClient.clear();
+    await supabase.auth.signOut();
+    toast.success("Signed out");
+    navigate({ to: "/auth", replace: true });
+  }
+
   return (
     <header className="sticky top-0 z-40 border-b border-border/60 bg-background/85 backdrop-blur">
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6">
@@ -34,9 +50,26 @@ export function SiteHeader() {
               {n.label}
             </a>
           ))}
-          <Button asChild variant="gold" size="sm" className="ml-3">
+          {user ? (
+            <>
+              <Button asChild variant="outline" size="sm" className="ml-2">
+                <Link to="/dashboard">
+                  <LayoutDashboard className="mr-1.5 h-4 w-4" /> Dashboard
+                </Link>
+              </Button>
+              <Button variant="ghost" size="sm" onClick={signOut} aria-label="Sign out">
+                <LogOut className="h-4 w-4" />
+              </Button>
+            </>
+          ) : (
+            <Button asChild variant="outline" size="sm" className="ml-2">
+              <Link to="/auth">Sign in</Link>
+            </Button>
+          )}
+          <Button asChild variant="gold" size="sm" className="ml-1">
             <a href="/#apply">Apply Now</a>
           </Button>
+
         </nav>
         <button
           className="rounded-md p-2 md:hidden"
@@ -59,9 +92,35 @@ export function SiteHeader() {
                 {n.label}
               </a>
             ))}
+            {user ? (
+              <>
+                <Button asChild variant="outline" className="mt-2">
+                  <Link to="/dashboard" onClick={() => setOpen(false)}>
+                    Dashboard
+                  </Link>
+                </Button>
+                <Button
+                  variant="ghost"
+                  className="mt-1"
+                  onClick={() => {
+                    setOpen(false);
+                    signOut();
+                  }}
+                >
+                  Sign out
+                </Button>
+              </>
+            ) : (
+              <Button asChild variant="outline" className="mt-2">
+                <Link to="/auth" onClick={() => setOpen(false)}>
+                  Sign in
+                </Link>
+              </Button>
+            )}
             <Button asChild variant="gold" className="mt-2">
               <a href="/#apply" onClick={() => setOpen(false)}>Apply Now</a>
             </Button>
+
           </div>
         </div>
       )}
