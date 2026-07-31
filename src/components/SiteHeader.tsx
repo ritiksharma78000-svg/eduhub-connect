@@ -92,9 +92,35 @@ export function SiteHeader() {
                 {n.label}
               </a>
             ))}
+            {user ? (
+              <>
+                <Button asChild variant="outline" className="mt-2">
+                  <Link to="/dashboard" onClick={() => setOpen(false)}>
+                    Dashboard
+                  </Link>
+                </Button>
+                <Button
+                  variant="ghost"
+                  className="mt-1"
+                  onClick={() => {
+                    setOpen(false);
+                    signOut();
+                  }}
+                >
+                  Sign out
+                </Button>
+              </>
+            ) : (
+              <Button asChild variant="outline" className="mt-2">
+                <Link to="/auth" onClick={() => setOpen(false)}>
+                  Sign in
+                </Link>
+              </Button>
+            )}
             <Button asChild variant="gold" className="mt-2">
               <a href="/#apply" onClick={() => setOpen(false)}>Apply Now</a>
             </Button>
+
           </div>
         </div>
       )}
