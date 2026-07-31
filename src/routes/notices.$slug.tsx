@@ -2,6 +2,11 @@ import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { ArrowLeft, Calendar, Tag } from "lucide-react";
 import { getNoticeBySlug, notices } from "@/lib/notices";
 
+function toIsoDate(date: string): string | null {
+  const parsed = new Date(date);
+  return Number.isNaN(parsed.getTime()) ? null : parsed.toISOString().slice(0, 10);
+}
+
 export const Route = createFileRoute("/notices/$slug")({
   loader: ({ params }) => {
     const notice = getNoticeBySlug(params.slug);
@@ -20,6 +25,7 @@ export const Route = createFileRoute("/notices/$slug")({
     const { notice } = loaderData;
     const title = `${notice.title} — [School Name]`;
     const description = notice.body;
+    const published = toIsoDate(notice.date);
     return {
       meta: [
         { title },
@@ -27,7 +33,30 @@ export const Route = createFileRoute("/notices/$slug")({
         { property: "og:title", content: title },
         { property: "og:description", content: description },
         { property: "og:type", content: "article" },
+        { property: "og:url", content: `/notices/${notice.slug}` },
         { name: "twitter:card", content: "summary_large_image" },
+      ],
+      links: [{ rel: "canonical", href: `/notices/${notice.slug}` }],
+      scripts: [
+        {
+          type: "application/ld+json",
+          children: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "Article",
+            headline: notice.title,
+            description,
+            articleSection: notice.category,
+            ...(published ? { datePublished: published, dateModified: published } : {}),
+            inLanguage: "en",
+            author: { "@type": "Organization", name: "[School Name]" },
+            publisher: { "@type": "EducationalOrganization", name: "[School Name]" },
+            mainEntityOfPage: {
+              "@type": "WebPage",
+              "@id": `/notices/${notice.slug}`,
+            },
+            articleBody: notice.content.join("\n\n"),
+          }),
+        },
       ],
     };
   },
