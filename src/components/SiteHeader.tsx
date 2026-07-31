@@ -50,9 +50,26 @@ export function SiteHeader() {
               {n.label}
             </a>
           ))}
-          <Button asChild variant="gold" size="sm" className="ml-3">
+          {user ? (
+            <>
+              <Button asChild variant="outline" size="sm" className="ml-2">
+                <Link to="/dashboard">
+                  <LayoutDashboard className="mr-1.5 h-4 w-4" /> Dashboard
+                </Link>
+              </Button>
+              <Button variant="ghost" size="sm" onClick={signOut} aria-label="Sign out">
+                <LogOut className="h-4 w-4" />
+              </Button>
+            </>
+          ) : (
+            <Button asChild variant="outline" size="sm" className="ml-2">
+              <Link to="/auth">Sign in</Link>
+            </Button>
+          )}
+          <Button asChild variant="gold" size="sm" className="ml-1">
             <a href="/#apply">Apply Now</a>
           </Button>
+
         </nav>
         <button
           className="rounded-md p-2 md:hidden"
