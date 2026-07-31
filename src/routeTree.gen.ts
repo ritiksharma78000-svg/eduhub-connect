@@ -18,6 +18,7 @@ import { Route as NoticesSlugRouteImport } from './routes/notices.$slug'
 import { Route as AuthenticatedTeacherRouteImport } from './routes/_authenticated/teacher'
 import { Route as AuthenticatedStudentRouteImport } from './routes/_authenticated/student'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
+import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
 
 const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
   id: '/sitemap.xml',
@@ -63,12 +64,18 @@ const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
   path: '/dashboard',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedAdminRoute = AuthenticatedAdminRouteImport.update({
+  id: '/admin',
+  path: '/admin',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
   '/contact': typeof ContactRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/admin': typeof AuthenticatedAdminRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/student': typeof AuthenticatedStudentRoute
   '/teacher': typeof AuthenticatedTeacherRoute
@@ -79,6 +86,7 @@ export interface FileRoutesByTo {
   '/auth': typeof AuthRoute
   '/contact': typeof ContactRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/admin': typeof AuthenticatedAdminRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/student': typeof AuthenticatedStudentRoute
   '/teacher': typeof AuthenticatedTeacherRoute
@@ -91,6 +99,7 @@ export interface FileRoutesById {
   '/auth': typeof AuthRoute
   '/contact': typeof ContactRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/_authenticated/admin': typeof AuthenticatedAdminRoute
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
   '/_authenticated/student': typeof AuthenticatedStudentRoute
   '/_authenticated/teacher': typeof AuthenticatedTeacherRoute
@@ -103,6 +112,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/contact'
     | '/sitemap.xml'
+    | '/admin'
     | '/dashboard'
     | '/student'
     | '/teacher'
@@ -113,6 +123,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/contact'
     | '/sitemap.xml'
+    | '/admin'
     | '/dashboard'
     | '/student'
     | '/teacher'
@@ -124,6 +135,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/contact'
     | '/sitemap.xml'
+    | '/_authenticated/admin'
     | '/_authenticated/dashboard'
     | '/_authenticated/student'
     | '/_authenticated/teacher'
@@ -204,16 +216,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedDashboardRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/admin': {
+      id: '/_authenticated/admin'
+      path: '/admin'
+      fullPath: '/admin'
+      preLoaderRoute: typeof AuthenticatedAdminRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
   }
 }
 
 interface AuthenticatedRouteRouteChildren {
+  AuthenticatedAdminRoute: typeof AuthenticatedAdminRoute
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
   AuthenticatedStudentRoute: typeof AuthenticatedStudentRoute
   AuthenticatedTeacherRoute: typeof AuthenticatedTeacherRoute
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
+  AuthenticatedAdminRoute: AuthenticatedAdminRoute,
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
   AuthenticatedStudentRoute: AuthenticatedStudentRoute,
   AuthenticatedTeacherRoute: AuthenticatedTeacherRoute,
